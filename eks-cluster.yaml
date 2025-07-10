@@ -3,7 +3,7 @@ kind: ClusterConfig
 metadata:
   name: flask-mysql-demo
   region: us-west-2
-  version: "1.30"  # Optimal for production - mature and stable
+  version: "1.30"
 
 vpc:
   cidr: "10.0.0.0/16"
@@ -24,12 +24,12 @@ nodeGroups:
     minSize: 1
     maxSize: 3
     volumeSize: 20
-    subnets: ['us-west-2a', 'us-west-2b', 'us-west-2c']
+    privateNetworking: true
     iam:
       withAddonPolicies:
         autoScaler: true
         ebs: true
         efs: true
-        albIngress: true
+        awsLoadBalancerController: true
         cloudWatch: true
-        externalDNS: true
+        externalDNS: true 
