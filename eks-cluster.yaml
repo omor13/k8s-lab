@@ -1,10 +1,9 @@
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
-
 metadata:
   name: flask-mysql-demo
   region: us-west-2
-  version: "1.29"
+  version: "1.30"  # Optimal for production - mature and stable
 
 vpc:
   cidr: "10.0.0.0/16"
@@ -12,19 +11,25 @@ vpc:
     public:
       us-west-2a: { cidr: "10.0.1.0/24" }
       us-west-2b: { cidr: "10.0.2.0/24" }
+      us-west-2c: { cidr: "10.0.3.0/24" }
+    private:
+      us-west-2a: { cidr: "10.0.4.0/24" }
+      us-west-2b: { cidr: "10.0.5.0/24" }
+      us-west-2c: { cidr: "10.0.6.0/24" }
 
 nodeGroups:
-  - name: ng-public
+  - name: ng-private
     instanceType: t3.medium
     desiredCapacity: 2
     minSize: 1
     maxSize: 3
     volumeSize: 20
-    ssh:
-      allow: true
+    subnets: ['us-west-2a', 'us-west-2b', 'us-west-2c']
     iam:
       withAddonPolicies:
         autoScaler: true
         ebs: true
         efs: true
         albIngress: true
+        cloudWatch: true
+        externalDNS: true
