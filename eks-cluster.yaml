@@ -1,47 +1,51 @@
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
+
+availabilityZones:
+  - eu-central-1a
+  - eu-central-1b
+  - eu-central-1c
+
 metadata:
   name: flask-mysql-demo
-  region: us-west-2
-  version: "1.30"  # Optimal for production - mature and stable
+  region: eu-central-1
+  version: "1.30"
+  tags:
+    karpenter.sh/discovery: flask-mysql-demo
+    created-by: eks-workshop-v2
+    env: flask-mysql-demo
+
+iam:
+  withOIDC: true
 
 vpc:
-  cidr: "10.0.0.0/16"
-  subnets:
-    public:
-      public-us-west-2a: 
-        cidr: "10.0.1.0/24"
-        az: "us-west-2a"
-      public-us-west-2b: 
-        cidr: "10.0.2.0/24"
-        az: "us-west-2b"
-      public-us-west-2c: 
-        cidr: "10.0.3.0/24"
-        az: "us-west-2c"
-    private:
-      private-us-west-2a: 
-        cidr: "10.0.4.0/24"
-        az: "us-west-2a"
-      private-us-west-2b: 
-        cidr: "10.0.5.0/24"
-        az: "us-west-2b"
-      private-us-west-2c: 
-        cidr: "10.0.6.0/24"
-        az: "us-west-2c"
+  cidr: 10.42.0.0/16
+  clusterEndpoints:
+    privateAccess: true
+    publicAccess: true
 
-nodeGroups:
-  - name: ng-private
-    instanceType: t3.medium
+addons:
+  - name: vpc-cni
+    version: latest
+    configurationValues: '{"env":{"ENABLE_PREFIX_DELEGATION":"true", "ENABLE_POD_ENI":"true", "POD_SECURITY_GROUP_ENFORCING_MODE":"standard"},"enableNetworkPolicy": "true"}'
+    resolveConflicts: overwrite
+  - name: coredns
+    version: latest
+  - name: kube-proxy
+    version: latest
+  - name: aws-ebs-csi-driver
+    wellKnownPolicies:
+      ebsCSIController: true
+
+managedNodeGroups:
+  - name: default
     desiredCapacity: 2
     minSize: 1
     maxSize: 3
-    volumeSize: 20
-    privateNetworking: true  # Deploy to private subnets
-    iam:
-      withAddonPolicies:
-        autoScaler: true
-        ebs: true
-        efs: true
-        awsLoadBalancerController: true  # Updated from deprecated albIngress
-        cloudWatch: true  # Added for better monitoring
-        externalDNS: true  # Added for DNS management
+    instanceType: t3.medium
+    privateNetworking: true
+    releaseVersion: "1.30"
+    updateConfig:
+      maxUnavailablePercentage: 50
+    labels:
+      workshop-default: "yes"
