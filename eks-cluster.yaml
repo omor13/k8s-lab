@@ -3,19 +3,31 @@ kind: ClusterConfig
 metadata:
   name: flask-mysql-demo
   region: us-west-2
-  version: "1.30"
+  version: "1.30"  # Optimal for production - mature and stable
 
 vpc:
   cidr: "10.0.0.0/16"
   subnets:
     public:
-      us-west-2a: { cidr: "10.0.1.0/24" }
-      us-west-2b: { cidr: "10.0.2.0/24" }
-      us-west-2c: { cidr: "10.0.3.0/24" }
+      public-us-west-2a: 
+        cidr: "10.0.1.0/24"
+        az: "us-west-2a"
+      public-us-west-2b: 
+        cidr: "10.0.2.0/24"
+        az: "us-west-2b"
+      public-us-west-2c: 
+        cidr: "10.0.3.0/24"
+        az: "us-west-2c"
     private:
-      us-west-2a: { cidr: "10.0.4.0/24" }
-      us-west-2b: { cidr: "10.0.5.0/24" }
-      us-west-2c: { cidr: "10.0.6.0/24" }
+      private-us-west-2a: 
+        cidr: "10.0.4.0/24"
+        az: "us-west-2a"
+      private-us-west-2b: 
+        cidr: "10.0.5.0/24"
+        az: "us-west-2b"
+      private-us-west-2c: 
+        cidr: "10.0.6.0/24"
+        az: "us-west-2c"
 
 nodeGroups:
   - name: ng-private
@@ -24,12 +36,12 @@ nodeGroups:
     minSize: 1
     maxSize: 3
     volumeSize: 20
-    privateNetworking: true
+    privateNetworking: true  # Deploy to private subnets
     iam:
       withAddonPolicies:
         autoScaler: true
         ebs: true
         efs: true
-        awsLoadBalancerController: true
-        cloudWatch: true
-        externalDNS: true 
+        awsLoadBalancerController: true  # Updated from deprecated albIngress
+        cloudWatch: true  # Added for better monitoring
+        externalDNS: true  # Added for DNS management
