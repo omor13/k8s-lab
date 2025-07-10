@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: flask-app
-        image: <YOUR_ECR_IMAGE>
+        image: public.ecr.aws/k5u0o7b3/flask-mysql-demo:latest
         ports:
         - containerPort: 5000
         env:
