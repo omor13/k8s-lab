@@ -2,13 +2,13 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 availabilityZones:
-  - eu-central-1a
-  - eu-central-1b
-  - eu-central-1c
+  - us-west-2a
+  - us-west-2b
+  - us-west-2c
 
 metadata:
   name: flask-mysql-demo
-  region: eu-central-1
+  region: us-west-2
   version: "1.30"
   tags:
     karpenter.sh/discovery: flask-mysql-demo
