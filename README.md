@@ -15,7 +15,7 @@ This repo shows how to deploy a simple Flask app with MySQL DB on AWS EKS.
 
 ```bash
 eksctl create cluster -f eks-cluster.yaml
-aws eks update-kubeconfig --region us-west-2 --name flask-mysql-demo
+aws eks update-kubeconfig --region us-east-2 --name flask-mysql-demo
 ```
 
 ### 2️⃣ Build & Push the Image
